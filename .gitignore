@@ -1,0 +1,11 @@
+.idea
+.env
+db.sqlite3
+media/post_photos/
+media/profile_photos/
+venv
+Social_Media_Clone/__pycache__
+profile_app/__pycache__
+auth_app/__pycache__
+auth_app/migrations/__pycache__
+profile_app/migrations/__pycache__

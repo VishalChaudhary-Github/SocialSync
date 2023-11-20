@@ -1,0 +1,72 @@
+{% extends 'landing.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block feed_change %}
+<div class="container">
+    <div class="row" style="display: flex; justify-content: space-evenly">
+        <div class="col-sm-6">
+
+        <div class="shadow">
+            <div class="card mb-3">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        {% if profile_photo != '' %}
+                            <img src="{{ profile_photo.url }}" class="img-fluid rounded-start" alt="Profile Photo" >
+                        {% else %}
+                            {% load static %}
+                            <img src="{% static 'default_pic.jpg' %}" class="img-fluid rounded-start" alt="Profile Photo" >
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title" style="color: darkcyan">{{ full_name }} | {{ username }}</h5>
+                            <hr>
+                            <p class="card-text">About You : {{ description }}</p>
+                            <p>Gender : {{ gender }}</p>
+                            <p>Date of Birth : {{ dob }}</p>
+                            <div class="row" style="justify-content: space-around; padding-top: 100px">
+                            <div class="col-sm-4">
+                                <a class="btn btn-outline-info" href="{% url 'profile_app-settings' %}">Settings</a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a class="btn btn-outline-info" href="#">Change Password</a>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <h3 class="text-center" style="padding-top: 5px; padding-bottom: 10px">Posts</h3>
+
+        <div class="shadow-none p-3 mb-5 bg-body-tertiary rounded">
+        <ul class="list-unstyled">
+
+            {% load humanize %}
+            {% for post in all_posts %}
+
+              <li class="media">
+                <img class="mr-3" src="{{ post.post_photo.url }}" alt="Generic placeholder image" height="96px" width="96px">
+
+                <div class="media-body">
+                  <h5 class="mt-0 mb-1">{{ post.caption }}</h5>
+                  {{ post.date_added|naturaltime }}
+                </div>
+              </li>
+            <hr>
+            {% empty %}
+                <h5 class="text-center" style="color: #7f968d">There are no post yet</h5>
+            {% endfor %}
+
+        </ul>
+
+        </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'landing.html' %}
+
+{% block title %}Feed{% endblock %}
+
+{% load humanize %}
+{% block feed_change %}
+    <div class="container">
+
+    <div class="row" style="display: flex; justify-content: center; align-items: start">
+
+        <div class="col-md-3">
+            <div class="shadow">
+            <div class="card mb-3">
+                    <div class="card-body text-center">
+                        {% if profile_photo != '' %}
+                            <img src="{{ profile_photo.url }}" alt="User Profile Image" class="img-fluid rounded-circle" style="width: 100px; height: 100px">
+
+                        {% else %}
+                            {% load static %}
+                            <img src="{% static 'default_pic.jpg' %}" alt="User Profile Image" class="img-fluid rounded-circle" style="width: 100px; height: 100px">
+                        {% endif %}
+                        <hr style="color: #61b0a6">
+                        <h5 class="card-title">{{ full_name }}</h5>
+                        <p class="card-text" style="font-size: 15px; font-family: monospace; font-style: normal">{{ description }}</p>
+                    </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="shadow">
+            <div class="card text-center mb-3">
+                <div class="card-header" style="background-color: #c0e3d7"><h4>New Post</h4></div>
+                    <div class="card-body">
+
+                        <form method="POST" action="{% url 'profile_app-add-post' %}" class="form-inline" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="What's on your mind?" name="caption" required>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        <input type="file" id="actual-btn" name="image" required/>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <button type="submit" class="btn btn-outline-info">Post</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+            </div>
+            </div>
+
+
+            {% for user in followings %}
+                {% for post in user.user_profile.profile_post.all %}
+                    <div class="shadow">
+                        <div class="card text-left">
+                            <div class="card-header" style="font-weight: bold">@{{ user.username }}</div>
+                            <img class="img-fluid" src="{{ post.post_photo.url }}" alt="post image">
+                            <div class="card-body">
+                                <p class="card-text">{{ post.caption }}</p>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">{{ post.date_added|naturaltime }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                {% endfor %}
+            {% empty %}
+                <h5 class="text-center" style="color: #33544a">Not Following Anyone</h5>
+            {% endfor %}
+
+        </div>
+    </div>
+    </div>
+{% endblock %}

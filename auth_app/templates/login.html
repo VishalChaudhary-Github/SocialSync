@@ -1,0 +1,54 @@
+{% extends 'landing.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block feed_change %}
+
+<div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 70vh">
+<div class="card text-center" style="width: 18rem;">
+
+    <div class="card-header" style="background-color: #c0e3d7">
+        <h3>Login</h3>
+    </div>
+
+    <div class="card-body">
+
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <p style="color: green; font-size: 14px;">{{ message }}</p>
+                {% elif message.tags == 'error' %}
+                    <p style="color: red; font-size: 14px;">{{ message }}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+
+    <form method="POST" action="{% url 'auth_app-user-authentication' %}">
+    {% csrf_token %}
+
+  <!-- Email input -->
+  <div class="form-outline mb-4">
+    <input type="text" id="form2Example1" class="form-control" placeholder="Username" name="username" required/>
+  </div>
+
+  <!-- Password input -->
+  <div class="form-outline mb-4">
+    <input type="password" id="form2Example2" class="form-control" placeholder="Password" name="password" required/>
+  </div>
+
+  <!-- Submit button -->
+  <button type="submit" class="btn btn-outline-primary">Login</button>
+        <ul></ul>
+
+  <!-- Register button -->
+  <div class="text-center">
+    <p>Not a member? <a href="{% url 'auth_app-register' %}">Register</a></p>
+  </div>
+    </form>
+    </div>
+    </div>
+    </div>
+
+{% endblock %}
