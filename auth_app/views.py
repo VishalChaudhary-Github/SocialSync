@@ -54,6 +54,5 @@ def about_us(request):
 
 
 def logout_user(request):
-    if request.user.is_authenticated:
-        logout(request)
-        return HttpResponseRedirect(reverse('landing-page'))
+    logout(request)
+    return HttpResponseRedirect(reverse('landing-page'))

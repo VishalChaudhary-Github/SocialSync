@@ -15,7 +15,7 @@
                             <img src="{{ profile_photo.url }}" class="img-fluid rounded-start" alt="Profile Photo" >
                         {% else %}
                             {% load static %}
-                            <img src="{% static 'default_pic.jpg' %}" class="img-fluid rounded-start" alt="Profile Photo" >
+                            <img src="{% static 'default_pic.jpg' %}" class="img-fluid rounded-start" alt="Profile Photo">
                         {% endif %}
                     </div>
                     <div class="col-md-8">
@@ -25,19 +25,54 @@
                             <p class="card-text">About You : {{ description }}</p>
                             <p>Gender : {{ gender }}</p>
                             <p>Date of Birth : {{ dob }}</p>
-                            <div class="row" style="justify-content: space-around; padding-top: 100px">
-                            <div class="col-sm-4">
-                                <a class="btn btn-outline-info" href="{% url 'profile_app-settings' %}">Settings</a>
-                            </div>
-                            <div class="col-sm-6">
-                                <a class="btn btn-outline-info" href="#">Change Password</a>
-                            </div>
-                            </div>
+                            {% if request.user.username == username %}
+                            <button type="button" class="btn rounded-pill btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#followingModal">Following</button>
+                            <button type="button" class="btn rounded-pill btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#followersModal">Followers</button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="followingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Users</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        {% for usr in following %}
+                                            <h5 class="text-center" style="color: #036262">{{ usr.get_username }}</h5>
+                                            <hr>
+                                        {% empty %}
+                                            You are not following anyone.
+                                        {% endfor %}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+{#                                ----#}
+                                <div class="modal fade" id="followersModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Users</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        {% for usr in followers %}
+                                            <h5 class="text-center" style="color: #036262">{{ usr.get_username }}</h5>
+                                            <hr>
+                                        {% empty %}
+                                            No Followers Yet.
+                                        {% endfor %}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+            {% block all_posts %}
             <h3 class="text-center" style="padding-top: 5px; padding-bottom: 10px">Posts</h3>
 
         <div class="shadow-none p-3 mb-5 bg-body-tertiary rounded">
@@ -48,13 +83,35 @@
 
               <li class="media">
                 <img class="mr-3" src="{{ post.post_photo.url }}" alt="Generic placeholder image" height="96px" width="96px">
-
                 <div class="media-body">
                   <h5 class="mt-0 mb-1">{{ post.caption }}</h5>
                   {{ post.date_added|naturaltime }}
+                    <!-- Button trigger modal -->
+                        <button type="button" class="btn rounded-pill btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">View Likes {{ post.likes.all.count }}</button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Users</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                {% for like in post.likes.all %}
+                                    <h5 class="text-center" style="color: #026969">{{ like.user.username }}</h5>
+                                    <hr>
+                                {% empty %}
+                                    No Likes yet
+                                {% endfor %}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+{#                    _______#}
                 </div>
               </li>
-            <hr>
+            <hr style="color: #0b6767">
             {% empty %}
                 <h5 class="text-center" style="color: #7f968d">There are no post yet</h5>
             {% endfor %}
@@ -62,6 +119,7 @@
         </ul>
 
         </div>
+        {% endblock all_posts %}
         </div>
 
 

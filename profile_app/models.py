@@ -14,7 +14,8 @@ class Profile(models.Model):
     description = models.TextField(blank=True, null=True)
     gender = models.CharField(max_length=4, choices=choices, blank=True, null=True)
     dob = models.DateField(blank=True, null=True)
-    following = models.ManyToManyField(to=User)
+    following = models.ManyToManyField(to=User, related_name='following')
+    followers = models.ManyToManyField(to=User, related_name='followers')
 
     class Meta:
         db_table = 'profile'

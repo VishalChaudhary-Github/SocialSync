@@ -29,6 +29,9 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'profile_app-home' %}">Profile</a>
               </li>
+              <li>
+                <a class="nav-link" href="{% url 'profile_app-settings' %}">Settings</a>
+              </li>
 
           {% else %}
             <li class="nav-item">
@@ -37,8 +40,8 @@
           {% endif %}
       </ul>
         {% if request.user.is_authenticated %}
-            <form class="form-inline" style="margin-right: 10px">
-                <input class="form-inline" type="search" placeholder="Search User" aria-label="Search">
+            <form method="GET" action="{% url 'profile_app-search-user' %}" class="form-inline" style="margin-right: 10px">
+                <input class="form-inline" type="search" placeholder="Search User" aria-label="Search" name="user">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
             <a class="btn btn-outline-info" href="{% url 'auth_app-logout' %}">Logout</a>

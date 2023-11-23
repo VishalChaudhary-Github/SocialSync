@@ -41,11 +41,11 @@
                             <div class="row mt-2">
                                 <div class="col-sm-8">
                                     <div class="form-group">
-                                        <input type="file" id="actual-btn" name="image" required/>
+                                        <input type="file" id="actual-btn" class="btn rounded-pill btn-outline-info btn-sm" name="image" required/>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
-                                    <button type="submit" class="btn btn-outline-info">Post</button>
+                                    <button type="submit" class="btn rounded-pill btn-outline-info">Post</button>
                                 </div>
                             </div>
                         </form>
@@ -58,9 +58,14 @@
                 {% for post in user.user_profile.profile_post.all %}
                     <div class="shadow">
                         <div class="card text-left">
-                            <div class="card-header" style="font-weight: bold">@{{ user.username }}</div>
+                            <div class="card-header" style="font-weight: bold">@<a href="{% url 'profile_app-view-user' user.get_username %}" style="color: darkcyan">{{ user.username }}</a></div>
                             <img class="img-fluid" src="{{ post.post_photo.url }}" alt="post image">
                             <div class="card-body">
+                                <form method="POST" action="{% url 'profile_app-like-post' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ post.id }}" name="pid">
+                                    <button type="submit" class="btn rounded-pill btn-outline-danger btn-sm">Like {{ post.likes.all.count }}</button>
+                                </form>
                                 <p class="card-text">{{ post.caption }}</p>
                             </div>
                             <div class="card-footer">

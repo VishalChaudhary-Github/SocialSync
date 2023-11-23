@@ -1,0 +1,44 @@
+{% extends 'landing.html' %}
+
+{% block title %}Search{% endblock %}
+
+{% block feed_change %}
+    <div class="container">
+        <div class="row" style="justify-content: space-around">
+            <div class="col-sm-5">
+
+
+                {% for user in users %}
+
+                    <div class="shadow">
+                        <div class="card mb-3">
+                          <div class="row g-0">
+                            <div class="col-md-2">
+                                {% if user.user_profile.profile_photo != '' %}
+                                    <img src="{{ user.user_profile.profile_photo.url }}" class="img-fluid rounded-start" alt="..." width="106px" height="96px">
+                                {% else %}
+                                    {% load static %}
+                                    <img src="{% static 'default_pic.jpg' %}" class="img-fluid rounded-start" alt="..." width="106px" height="96px">
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                              <div class="card-body">
+                                  <a href="{% url 'profile_app-view-user' user.get_username %}" style="color: #017575"><h5 class="card-title">{{ user.get_username }}</h5></a>
+                                    <p class="card-text">{{ user.user_profile.description }}</p>
+                                  {% if user in self %}
+                                        <a class="btn rounded-pill btn-outline-info" href="{% url 'profile_app-unfollow-user' user.get_username %}">Following &#x02713</a>
+                                  {% else %}
+                                        <a class="btn rounded-pill btn-outline-info" href="{% url 'profile_app-follow-user' user.get_username %}">&#x271B Follow</a>
+                                  {% endif %}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <h5 class="text-center" style="color: #7f968d">No such users found!</h5>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
