@@ -13,14 +13,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from environ import Env
 import os
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-env = Env(DEBUG=(bool, False))      # False
+env = Env(DEBUG=(bool, False))
 env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
@@ -34,7 +33,6 @@ DEBUG = env('DEBUG')      # False
 
 ALLOWED_HOSTS = []
 
-ALLOWED_HOSTS.append(env('ALLOWED_HOSTS'))
 
 # Application definition
 
@@ -85,7 +83,10 @@ WSGI_APPLICATION = 'Social_Media_Clone.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {'default': dj_database_url.parse(env('INTERNAL_DB'))}
+DATABASES = {'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3'}
+             }
 
 
 # Password validation
@@ -122,15 +123,13 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
