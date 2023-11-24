@@ -13,8 +13,8 @@
             <form method="POST" action="{% url 'profile_app-update-profile' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="input-group mb-3">
-                    <input type="file" class="form-control" id="inputGroupFile02" name="profile_photo">
-                    <label class="input-group-text" for="inputGroupFile02">Profile Photo</label>
+                    <input type="file" class="form-control" accept="image/*" id="id_profile_photo" name="profile_photo">
+                    <label class="input-group-text" for="id_profile_photo">Profile Photo</label>
                 </div>
                 <div class="mb-3">
                     <input class="form-control" placeholder="Tell us About Yourself" name="description" required>

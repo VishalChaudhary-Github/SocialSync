@@ -43,17 +43,24 @@ def settings(request):
 
 
 def update_profile(request):
-    profile_photo_ = request.FILES.get('profile_photo')
-    description_ = request.POST['description']
-    gender_ = request.POST['gender']
-    dob_ = request.POST['dob']
-    if profile_photo_ is None:
-        p = Profile.objects.filter(user=request.user.pk).update(description=description_, gender=gender_, dob=dob_)
-    else:
-        p = Profile.objects.filter(user=request.user.pk).update(profile_photo=profile_photo_, description=description_,
-                                                                gender=gender_, dob=dob_)
+    if request.method == 'POST':
+        profile_photo_ = request.FILES.get('profile_photo')
+        description_ = request.POST['description']
+        gender_ = request.POST['gender']
+        dob_ = request.POST['dob']
 
-    return HttpResponseRedirect(redirect_to=reverse('profile_app-home'))
+        profile = Profile.objects.get(user=request.user)
+
+        profile.description = description_
+        profile.gender = gender_
+        profile.dob = dob_
+
+        if profile_photo_:
+            profile.profile_photo = profile_photo_
+
+        profile.save()
+
+        return HttpResponseRedirect(redirect_to=reverse('profile_app-home'))
 
 
 def add_post(request):
