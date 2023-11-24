@@ -27,4 +27,6 @@ urlpatterns = [
     path('about-us', about_us, name='about-us'),
     path('auth/', include('auth_app.urls')),
     path('profile/', include('profile_app.urls'))
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
