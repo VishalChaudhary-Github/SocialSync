@@ -13,14 +13,14 @@
             <div class="card mb-3">
                     <div class="card-body text-center">
                         {% if profile_photo != '' %}
-                            <img src="{{ profile_photo.url }}" alt="User Profile Image" class="img-fluid rounded-circle" style="width: 100px; height: 100px">
+                            <img src="{{ profile_photo.url }}" alt="User Profile Image" class="img-fluid rounded-circle" style="width: 64px; height: 72px">
 
                         {% else %}
                             {% load static %}
-                            <img src="{% static 'default_pic.jpg' %}" alt="User Profile Image" class="img-fluid rounded-circle" style="width: 100px; height: 100px">
+                            <img src="{% static 'boy.png' %}" alt="User Profile Image" class="img-fluid rounded-circle" style="width: 64px; height: 72px">
                         {% endif %}
                         <hr style="color: #61b0a6">
-                        <h5 class="card-title">{{ full_name }}</h5>
+                        <h5 class="card-title" style="color: #5b80b2">{{ full_name }}</h5>
                         <p class="card-text" style="font-size: 15px; font-family: monospace; font-style: normal">{{ description }}</p>
                     </div>
             </div>
@@ -54,11 +54,11 @@
             </div>
 
 
-            {% for user in followings %}
-                {% for post in user.user_profile.profile_post.all %}
+
+                {% for post in filtered_post %}
                     <div class="shadow">
                         <div class="card text-left">
-                            <div class="card-header" style="font-weight: bold">@<a href="{% url 'profile_app-view-user' user.get_username %}" style="color: darkcyan">{{ user.username }}</a></div>
+                            <div class="card-header" style="font-weight: bold; color: #5b80b2">@{{ post.profile.user.get_username }}</div>
                             <img class="img-fluid" src="{{ post.post_photo.url }}" alt="post image">
                             <div class="card-body">
                                 <form method="POST" action="{% url 'profile_app-like-post' %}">
@@ -74,10 +74,9 @@
                         </div>
                     </div>
                     <br>
+                {% empty %}
+                    <h5 class="text-center" style="color: #33544a">Not Following Anyone!</h5>
                 {% endfor %}
-            {% empty %}
-                <h5 class="text-center" style="color: #33544a">Not Following Anyone</h5>
-            {% endfor %}
 
         </div>
     </div>

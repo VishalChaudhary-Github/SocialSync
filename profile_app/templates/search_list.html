@@ -12,19 +12,21 @@
 
                     <div class="shadow">
                         <div class="card mb-3">
-                          <div class="row g-0">
-                            <div class="col-md-2">
+                          <div class="row g-0" style="justify-content: center; align-items: center">
+                            <div class="col-md-2" style="display: flex;justify-content: center">
                                 {% if user.user_profile.profile_photo != '' %}
-                                    <img src="{{ user.user_profile.profile_photo.url }}" class="img-fluid rounded-start" alt="..." width="106px" height="96px">
+                                    <img src="{{ user.user_profile.profile_photo.url }}" class="img-fluid rounded-circle" alt="..." style="width: 96px; height: 96px">
                                 {% else %}
                                     {% load static %}
-                                    <img src="{% static 'default_pic.jpg' %}" class="img-fluid rounded-start" alt="..." width="106px" height="96px">
+                                    <img src="{% static 'boy.png' %}" class="img-fluid rounded-circle" alt="..." style="width: 96px; height: 96px">
                                 {% endif %}
                             </div>
                             <div class="col-md-8">
                               <div class="card-body">
-                                  <a href="{% url 'profile_app-view-user' user.get_username %}" style="color: #017575"><h5 class="card-title">{{ user.get_username }}</h5></a>
-                                    <p class="card-text">{{ user.user_profile.description }}</p>
+                                  <h5 class="card-title" style="color: #5b80b2">{{ user.get_username }}</h5>
+                                    {% if user.user_profile.description is not None %}
+                                        <p class="card-text">{{ user.user_profile.description }}</p>
+                                    {% endif %}
                                   {% if user in self %}
                                         <a class="btn rounded-pill btn-outline-info" href="{% url 'profile_app-unfollow-user' user.get_username %}">Following &#x02713</a>
                                   {% else %}

@@ -7,9 +7,18 @@ from django.contrib.auth.models import User
 def feeds(request):
     if request.user.is_authenticated:
         context = {'profile_photo': request.user.user_profile.profile_photo,
-                   'full_name': request.user.get_full_name(),
-                   'description': request.user.user_profile.description,
-                   'followings': request.user.user_profile.following.all()}
+                   'full_name': request.user.get_full_name()}
+
+        filtered_post = []
+        for post in Post.objects.all():
+            if post.profile.user in request.user.user_profile.following.all():
+                filtered_post.append(post)
+
+        context['filtered_post'] = filtered_post
+
+        if request.user.user_profile.description is not None:
+            context['description'] = request.user.user_profile.description
+
         return render(request, 'feed.html', context=context)
     else:
         return HttpResponseRedirect(redirect_to=reverse('auth_app-login'))
@@ -20,12 +29,16 @@ def home(request):
         context = {'username': request.user.get_username(),
                    'profile_photo': request.user.user_profile.profile_photo,
                    'full_name': request.user.get_full_name(),
-                   'description': request.user.user_profile.description,
-                   'gender': request.user.user_profile.get_gender_display(),
-                   'dob': request.user.user_profile.dob,
                    'all_posts': request.user.user_profile.profile_post.all(),
                    'following': request.user.user_profile.following.all(),
                    'followers': request.user.user_profile.followers.all()}
+
+        if request.user.user_profile.description is not None:
+            context['description'] = request.user.user_profile.description
+        else:
+            context['description'] = ('The more we value things outside our control, '
+                                      'the less control we have.')
+
         return render(request, 'home.html', context=context)
     else:
         return HttpResponseRedirect(redirect_to=reverse('auth_app-login'))
@@ -116,18 +129,6 @@ def new_password(request):
         return HttpResponseRedirect(redirect_to=reverse('profile_app-settings'))
     else:
         return HttpResponseRedirect(redirect_to=reverse('auth_app-login'))
-
-
-def view_user(request, user_name):
-    if request.user.is_authenticated:
-        usr = User.objects.get(username=user_name)
-        context = {'username': usr.get_username(),
-                   'profile_photo': usr.user_profile.profile_photo,
-                   'full_name': usr.get_full_name(),
-                   'description': usr.user_profile.description,
-                   'gender': usr.user_profile.gender,
-                   'dob': usr.user_profile.dob}
-        return render(request, 'view_profile.html', context=context)
 
 
 def like_post(request):

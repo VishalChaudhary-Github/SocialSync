@@ -9,22 +9,26 @@
 
         <div class="shadow">
             <div class="card mb-3">
-                <div class="row g-0">
+                <div class="row g-0" style="align-items: center">
                     <div class="col-md-4">
-                        {% if profile_photo != '' %}
-                            <img src="{{ profile_photo.url }}" class="img-fluid rounded-start" alt="Profile Photo" >
-                        {% else %}
-                            {% load static %}
-                            <img src="{% static 'default_pic.jpg' %}" class="img-fluid rounded-start" alt="Profile Photo">
-                        {% endif %}
+                        <div class="container" style="display: flex; justify-content: center">
+                            <div class="row">
+                                {% if profile_photo != '' %}
+                                    <a href="{{ profile_photo.url }}"><img src="{{ profile_photo.url }}" alt="Profile Photo" class="img-fluid rounded-circle" style="width: 128px; height: 128px"></a>
+                                {% else %}
+                                    {% load static %}
+                                    <img src="{% static 'boy.png' %}" class="img-fluid rounded-circle" alt="Profile Photo">
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
                             <h5 class="card-title" style="color: darkcyan">{{ full_name }} | {{ username }}</h5>
                             <hr>
-                            <p class="card-text">About You : {{ description }}</p>
-                            <p>Gender : {{ gender }}</p>
-                            <p>Date of Birth : {{ dob }}</p>
+                            <p class="card-text">{{ description }}</p>
+
+
                             {% if request.user.username == username %}
                             <button type="button" class="btn rounded-pill btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#followingModal">Following</button>
                             <button type="button" class="btn rounded-pill btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#followersModal">Followers</button>
@@ -76,52 +80,59 @@
             <h3 class="text-center" style="padding-top: 5px; padding-bottom: 10px">Posts</h3>
 
         <div class="shadow-none p-3 mb-5 bg-body-tertiary rounded">
-        <ul class="list-unstyled">
+
 
             {% load humanize %}
             {% for post in all_posts %}
 
-              <li class="media">
-                <img class="mr-3" src="{{ post.post_photo.url }}" alt="Generic placeholder image" height="96px" width="96px">
-                <div class="media-body">
-                  <h5 class="mt-0 mb-1">{{ post.caption }}</h5>
-                  {{ post.date_added|naturaltime }}
-                    <!-- Button trigger modal -->
-                        <button type="button" class="btn rounded-pill btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">View Likes {{ post.likes.all.count }}</button>
+                <!-- Media object -->
+                    <div class="d-flex">
+                      <!-- Image -->
+                        <a href="{{ post.post_photo.url }}">
+                      <img
+                        src="{{ post.post_photo.url }}"
+                        alt="John Doe"
+                        class="me-3 rounded-circle"
+                        style="width: 60px; height: 60px;"
+                      /></a>
+                      <!-- Body -->
+                      <div>
+                        <h5 class="fw">
+                          {{ username }}
+                          <small class="text-muted">{{ post.date_added|naturaltime }}</small>
+                        </h5>
+                        <p>
+                          {{ post.caption }}
+                            <button type="button" class="btn rounded-pill btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Like</button></p>
 
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Users</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <div class="modal-body">
-                                {% for like in post.likes.all %}
-                                    <h5 class="text-center" style="color: #026969">{{ like.user.username }}</h5>
-                                    <hr>
-                                {% empty %}
-                                    No Likes yet
-                                {% endfor %}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-{#                    _______#}
-                </div>
-              </li>
-            <hr style="color: #0b6767">
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Users</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                              </div>
+                                              <div class="modal-body">
+                                                {% for like in post.likes.all %}
+                                                    <h5 class="text-center" style="color: #026969">{{ like.user.username }}</h5>
+                                                    <hr>
+                                                {% empty %}
+                                                    No Likes yet
+                                                {% endfor %}
+                                              </div>
+                                          </div>
+                                      </div>
+                                </div>
+
+                      </div>
+                    </div>
             {% empty %}
-                <h5 class="text-center" style="color: #7f968d">There are no post yet</h5>
+                <h5 class="text-center" style="color: #7f968d">No Post Added Yet!</h5>
             {% endfor %}
-
-        </ul>
 
         </div>
         {% endblock all_posts %}
         </div>
-
 
     </div>
 
