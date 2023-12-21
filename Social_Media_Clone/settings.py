@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'Social_Media_Clone.wsgi.application'
 
 DATABASES = {'default': {
                 'ENGINE': 'django.db.backends.postgresql',
-                'NAME': 'postgres',
+                'NAME': 'SocialMediaClone_db',
                 'USER': env('USER'),
                 'PASSWORD': env('PASSWORD'),
                 'HOST': 'localhost',
