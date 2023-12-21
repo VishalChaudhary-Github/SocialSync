@@ -22,4 +22,8 @@ After activating the env in the project directory.
 5. Follow, Unfollow other users.
 6. Like followed users post.
 
+#### Note - Things yet to be implemented
+1. Support for Caching
+2. Pagination filter.
+
 ### Other Functionality will soon be coming...
