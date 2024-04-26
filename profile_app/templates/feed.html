@@ -1,0 +1,150 @@
+{% extends 'landing.html' %}
+{% load cache %}
+
+{% block title %}Feed{% endblock %}
+
+{% load humanize %}
+{% block feed_change %}
+    <div class="container">
+
+    <div class="row" style="display: flex; justify-content: center; align-items: start">
+
+        <div class="col-md-3">
+            <div class="shadow">
+                <div class="card mb-3">
+                        <div class="card-body text-center">
+                            {% if profile_photo != '' %}
+                                <img src="{{ profile_photo.url }}" alt="User Profile Image" class="img-fluid rounded-circle" style="width: 96px; height: 90px">
+                            {% else %}
+                                {% load static %}
+                                <img src="{% static 'blank-profile-picture.png' %}" alt="User Profile Image" class="img-fluid rounded-circle" style="width: 96px; height: 90px">
+                            {% endif %}
+                            <hr style="color: #61b0a6">
+                            <h5 class="card-title" style="color: #5b80b2">{{ full_name }}</h5>
+                            <p class="card-text" style="font-size: 15px; font-family: sans-serif">{{ description }}</p>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="shadow">
+                <div class="card text-center mb-3">
+                    <div class="card-header" style="background-color: #c0e3d7"><h4>New Post</h4></div>
+                        <div class="card-body">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    {% if message.tags == 'success' %}
+                                        <p style="color: green; font-size: 14px;">{{ message }}</p>
+                                    {% elif message.tags == 'error' %}
+                                        <p style="color: red; font-size: 14px;">{{ message }}</p>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+
+                            <form method="POST" action="{% url 'profile_app-add-post' %}" class="form-inline" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="What's on your mind?" name="caption" required>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <input type="file" id="actual-btn" name="image" required hidden/>
+                                            <label for="actual-btn"
+                                                   style="display: inline-block;
+                                                   background-color: #dbeaea;
+                                                   padding: 0.5rem;
+                                                   color: #25b5b5;
+                                                   font-family: sans-serif;
+                                                   border-radius: 0.3rem;
+                                                   cursor: pointer;
+                                                   margin-top: 5px">Choose File</label>
+                                            <span id="file-chosen">No file chosen</span>
+                                            <script>const actualBtn = document.getElementById('actual-btn');
+                                                const fileChosen = document.getElementById('file-chosen');
+                                                actualBtn.addEventListener('change', function(){
+                                                  fileChosen.textContent = this.files[0].name
+                                                })</script>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <button type="submit" class="btn rounded-pill btn-outline-info" style="margin-top: 5px">Post</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                </div>
+            </div>
+
+                    {% for post in current_page.object_list %}
+                        <div class="shadow">
+                            <div class="card text-left">
+                                <div class="card-header" style="font-weight: bold; color: #5b80b2">@{{ post.profile.user.get_username }}</div>
+                                {% if post.is_video %}
+                                    <video src="{{ post.post_photo.url }}" controls></video>
+                                {% else %}
+                                    <img class="img-fluid" src="{{ post.post_photo.url }}" alt="post image">
+                                {% endif %}
+                                <div class="card-body">
+                                    <div class="row">
+                                    <form method="POST" action="{% url 'profile_app-like-post' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{ post.id }}" name="pid">
+                                        <button type="submit" class="btn rounded-pill btn-outline-danger btn-sm">Like {{ post.likes.all.count }}</button><span style="margin-left: 10px">{{ post.caption }}</span>
+                                    </form>
+
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="text-muted">{{ post.date_added|naturaltime }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    {% empty %}
+                        <h5 class="text-center" style="color: #33544a">Not Following Anyone!</h5>
+                    {% endfor %}
+        </div>
+    </div>
+    </div>
+    {% if not is_list_empty %}
+    <div class="container" style="display: flex; justify-content: center; margin-top: 30px">
+        <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                  {% if current_page.has_previous %}
+                      <li class="page-item">
+                        <a class="page-link" href="{% url 'profile_app-feeds' %}?page={{ current_page.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                      </li>
+                  {% else %}
+                      <li class="page-item disabled">
+                        <a class="page-link" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                      </li>
+
+                  {% endif %}
+                  <li class="page-item">
+                      <a class="page-link">{{ current_page.number }}</a>
+                  </li>
+                  {% if current_page.has_next %}
+                  <li class="page-item">
+                      <a class="page-link" href="{% url 'profile_app-feeds' %}?page={{ current_page.next_page_number }}" aria-label="Next">
+                          <span aria-hidden="true">&raquo;</span>
+                      </a>
+                  </li>
+                  {% else %}
+                      <li class="page-item disabled">
+                          <a class="page-link" aria-label="Next">
+                              <span aria-hidden="true">&raquo;</span>
+                          </a>
+                      </li>
+                  {% endif %}
+              </ul>
+        </nav>
+    </div>
+    {% endif %}
+    <br>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'landing.html' %}
+
+{% block title %}Search{% endblock %}
+
+{% block feed_change %}
+    <div class="container">
+        <div class="row" style="justify-content: space-around">
+            <div class="col-sm-5">
+
+                {% for user in users %}
+
+                    <div class="shadow">
+                        <div class="card mb-3">
+                          <div class="row g-0" style="justify-content: center; align-items: center">
+                            <div class="col-md-2" style="display: flex;justify-content: center">
+                                {% if user.user_profile.profile_photo != '' %}
+                                    <img src="{{ user.user_profile.profile_photo.url }}" class="img-fluid rounded-circle" alt="..." style="width: 96px; height: 90px; margin-top: 20px; margin-bottom: 20px">
+                                {% else %}
+                                    {% load static %}
+                                    <img src="{% static 'blank-profile-picture.png' %}" class="img-fluid rounded-circle" alt="..." style="width: 96px; height: 90px; margin-top: 20px; margin-bottom: 20px">
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                              <div class="card-body">
+                                  <h5 class="card-title text-center" style="color: #5b80b2">@{{ user.get_username }}</h5>
+                                    {% if user.user_profile.description is not None %}
+                                        <p class="card-text text-center">{{ user.user_profile.description }}</p>
+                                    {% endif %}
+                                  {% if user in self %}
+                                        {# if the user is in my following#}
+                                      <form method="POST" action="{% url 'profile_app-unfollow-user' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{ user.get_username }}" name="username">
+                                          <div class="container" style="display:flex; justify-content: center">
+                                            <button type="submit" class="btn rounded-pill btn-outline-danger btn-sm">Following &#x02713</button>
+                                          </div>
+                                      </form>
+                                  {% else %}
+                                      {# if i am not following the user #}
+                                      <form method="POST" action="{% url 'profile_app-follow-user' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{ user.get_username }}" name="username">
+                                          <div class="container" style="display:flex; justify-content: center">
+                                            <button type="submit" class="btn rounded-pill btn-outline-danger btn-sm">&#x271B Follow</button>
+                                          </div>
+                                      </form>
+                                  {% endif %}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <h5 class="text-center" style="color: #7f968d">No such users found!</h5>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

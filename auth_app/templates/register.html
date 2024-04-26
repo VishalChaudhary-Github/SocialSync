@@ -1,0 +1,66 @@
+{% extends 'landing.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block feed_change %}
+
+<div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 70vh">
+<div class="shadow">
+<div class="card text-center" style="width: 18rem;">
+    <div class="card-header" style="background-color: #c0e3d7">
+        <h3>Sign Up</h3>
+    </div>
+    <div class="card-body">
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <p style="color: red; font-size: 14px;">{{ message }}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+    <form method="POST" action="{% url 'auth_app-new-user' %}">
+        {% csrf_token %}
+  <!-- 2 column grid layout with text inputs for the first and last names -->
+  <div class="row mb-4">
+    <div class="col">
+      <div class="form-outline">
+        <input type="text" id="form3Example1" class="form-control" placeholder="First Name" name="first_name" required/>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-outline">
+        <input type="text" id="form3Example2" class="form-control" placeholder="Last Name" name="last_name" required/>
+      </div>
+    </div>
+  </div>
+
+  <!-- username input -->
+  <div class="form-outline mb-4">
+    <input type="text" id="form3Example3" class="form-control" placeholder="Username" name="username" minlength="10" maxlength="150" required/>
+  </div>
+
+  <div class="form-outline mb-4">
+    <input type="email" id="form3Example3" class="form-control" placeholder="Email" name="email" required/>
+  </div>
+
+  <!-- Password input -->
+  <div class="form-outline mb-4">
+    <input type="password" id="form3Example4" class="form-control" placeholder="Password" name="password" minlength="10" required/>
+  </div>
+
+  <!-- Submit button -->
+  <button type="submit" class="btn btn-outline-primary">Sign up</button>
+    <ul>
+    </ul>
+    <div class="text-center">
+    <p>Already a member? <a href="{% url 'auth_app-login' %}">Login</a></p>
+    </div>
+</form>
+    </div>
+    </div>
+</div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Welcome{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    {% load static %}
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+</head>
+<body style="padding-top: 80px">
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+{#---- nav bar -----#}
+<nav class="navbar navbar-expand-lg navbar-light fixed-top shadow" style="background-color: #c0e3d7">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'landing-page' %}">SocialSync</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          {% if request.user.is_authenticated %}
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'profile_app-feeds' %}">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'profile_app-home' %}">Profile</a>
+                  </li>
+                  <li>
+                    <a class="nav-link" href="{% url 'profile_app-settings' %}">Settings</a>
+                  </li>
+              </ul>
+              <form method="GET" action="{% url 'profile_app-search-user' %}" class="form-inline" style="margin-right: 10px">
+                    <input class="form-inline" type="search" placeholder="Search User" aria-label="Search" name="user" required>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </form>
+              <a class="btn btn-outline-info" href="{% url 'auth_app-logout' %}">Logout</a>
+          {% else %}
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'about-us' %}">About Us</a>
+                </li>
+            </ul>
+            <a class="btn btn-outline-info" href="{% url 'auth_app-login' %}">Login</a>
+              <ul></ul>
+            <a class="btn btn-outline-info" href="{% url 'auth_app-register' %}">Get Started</a>
+          {% endif %}
+
+    </div>
+  </div>
+</nav>
+
+
+{% block feed_change %}
+
+<div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 70vh; flex-direction: column">
+
+    {% block about-us %}
+    <h1 class="text-center" style="color: #7f968d">Welcome to SocialSync</h1>
+    <p class="text-center" style="color: #454b48">This is a one-stop destination to connect with your friends, family or someone else.</p>
+    {% endblock %}
+
+</div>
+{% endblock %}
+</body>
+</html>

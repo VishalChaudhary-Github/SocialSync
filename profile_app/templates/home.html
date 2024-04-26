@@ -1,0 +1,143 @@
+{% extends 'landing.html' %}
+{% load cache %}
+
+{% block title %}Profile{% endblock %}
+
+{% block feed_change %}
+<div class="container" style="width: 1000px">
+    <div class="row" style="display: flex; justify-content: space-evenly">
+        <div class="col-sm-6">
+
+        <div class="shadow">
+            <div class="card mb-3">
+                <div class="row g-0" style="align-items: center">
+                    <div class="col-md-4">
+                        <div class="container" style="display: flex; justify-content: center">
+                            <div class="row">
+                                {% if profile_photo != '' %}
+                                    <a href="{{ profile_photo.url }}"><img src="{{ profile_photo.url }}" alt="Profile Photo" class="img-fluid rounded-circle" style="width: 96px; height: 90px; margin-top: 20px; margin-bottom: 20px"></a>
+                                {% else %}
+                                    {% load static %}
+                                    <img src="{% static 'blank-profile-picture.png' %}" class="img-fluid rounded-circle" alt="Profile Photo" style="width: 96px; height: 90px; margin-top: 20px; margin-bottom: 20px">
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title text-center" style="color: darkcyan; font-family: sans-serif; font-weight: bold">{{ full_name }}</h5>
+                            <hr>
+                            <p class="card-text text-center">{{ description }}</p>
+
+
+                            {% if request.user.username == username %}
+                                <div class="row">
+                                    <div class="col-sm-6" style="display: flex; justify-content: center; margin-bottom: 10px; margin-top: 10px">
+                                            <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#followingModal">Following</button>
+                                    </div>
+                                    <div class="col-sm-6" style="display: flex; justify-content: center; margin-top: 10px; margin-bottom: 10px">
+                                        <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#followersModal">Followers</button>
+                                    </div>
+                                </div>
+                                <!-- Modal -->
+                                <div class="modal fade" id="followingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Users</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        {% for usr in following %}
+                                            <h5 class="text-center" style="color: #036262">{{ usr.get_username }}</h5>
+                                            <hr>
+                                        {% empty %}
+                                            You are not following anyone.
+                                        {% endfor %}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+{#                                ----#}
+                                <div class="modal fade" id="followersModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Users</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        {% for usr in followers %}
+                                            <h5 class="text-center" style="color: #036262">{{ usr.get_username }}</h5>
+                                            <hr>
+                                        {% empty %}
+                                            No Followers Yet.
+                                        {% endfor %}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            {% block all_posts %}
+                {% cache 300 all__posts all_posts %}
+            <h3 class="text-center" style="padding-top: 5px; padding-bottom: 10px">Posts</h3>
+
+            {% for posts in all_posts %}
+                <div class="row">
+                {% for post in posts %}
+                    <div class="col" style="align-items: center; margin: 5px">
+                        <div class="row" style="">
+                            {% if post.is_video %}
+                                <img src="{% static 'thumbnail.png' %}" alt="thumbnail" style="height: 128px; width: 198px">
+                            {% else %}
+                                <img src="{{ post.post_photo.url }}" class="card-img" alt="Stony Beach" style="width: 194px; height: 128px"/>
+                            {% endif %}
+                        </div>
+{#                        <div class="container" style="margin-top: 10px; justify-content: center">#}
+                            <button type="button" class="btn rounded-pill btn-outline-danger btn-sm" style="margin-top: 12px" data-bs-toggle="modal" data-bs-target="#exampleModal{{ post.id }}">View Post</button>
+{#                        </div>#}
+                        <div class="modal fade" id="exampleModal{{ post.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">@{{ username }}</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% if post.is_video %}
+                                            <video src="{{ post.post_photo.url }}" controls style="width: 470px; height: 300px"></video>
+                                        {% else %}
+                                            <img src="{{ post.post_photo.url }}" class="card-img" alt="Stony Beach"/>
+                                        {% endif %}
+                                    <p style="margin-top: 5px; font-family: sans-serif; font-weight: bold">{{ post.caption }}</p>
+                                    <p>Likes: {{ post.likes.all.count }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form method="POST" action="{% url 'profile_app-delete-post' %}">
+                                            {% csrf_token %}
+                                            <input value="{{ post.id }}" name="post_id" type="hidden">
+                                            <button type="submit" class="btn btn-outline-danger">Delete Post</button>
+                                        </form>
+                                      </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            {% empty %}
+                <h5 class="text-center" style="color: #7f968d">No Post Added Yet!</h5>
+            {% endfor %}
+
+        </div>
+                {% endcache %}
+        {% endblock all_posts %}
+        </div>
+
+    </div>
+{% endblock %}

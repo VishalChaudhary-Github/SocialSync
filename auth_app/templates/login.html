@@ -1,0 +1,80 @@
+{% extends 'landing.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block feed_change %}
+
+
+<div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 70vh">
+<div class="shadow">
+<div class="card text-center" style="width: 18rem;">
+
+    <div class="card-header" style="background-color: #c0e3d7">
+        <h3>Login</h3>
+    </div>
+
+    <div class="card-body">
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <p style="color: green; font-size: 14px;">{{ message }}</p>
+                {% elif message.tags == 'error' %}
+                    <p style="color: red; font-size: 14px;">{{ message }}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+
+    <form method="POST" action="{% url 'auth_app-user-authentication' %}">
+    {% csrf_token %}
+
+          <!-- Email input -->
+          <div class="form-outline mb-4">
+            <input type="text" id="form2Example1" class="form-control" placeholder="Username" name="username" required/>
+          </div>
+
+          <!-- Password input -->
+          <div class="form-outline mb-4">
+            <input type="password" id="form2Example2" class="form-control" placeholder="Password" name="password" required/>
+          </div>
+
+          <!-- Submit button -->
+          <button type="submit" class="btn btn-outline-primary">Login</button>
+                <ul></ul>
+
+          <!-- Register button -->
+          <div class="text-center">
+            <p>Not a member? <a href="{% url 'auth_app-register' %}">Register</a></p>
+          </div>
+    </form>
+    <!-- Forgot Password button -->
+    <div class="row">
+        <a href="{% url 'auth_app-forgot-password' %}">Forgot password?</a>
+
+        <script src="https://accounts.google.com/gsi/client" async></script>
+        <br>
+
+        <div id="g_id_onload"
+             data-client_id="767026119510-8662q57i26d8a6ieq21dbubcs4ipq6k5.apps.googleusercontent.com"
+             data-context="signin"
+             data-ux_mode="redirect"
+             data-login_uri="{% url 'auth_app-sign-in-with-google' %}"
+             data-auto_prompt="false" style="margin-top: 10px">
+        </div>
+
+        <div class="g_id_signin"
+             data-type="standard"
+             data-shape="pill"
+             data-theme="outline"
+             data-text="signin_with"
+             data-size="medium"
+             data-logo_alignment="left">
+        </div>
+    </div>
+    </div>
+    </div>
+</div>
+    </div>
+
+{% endblock %}

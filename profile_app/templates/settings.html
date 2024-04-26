@@ -1,0 +1,66 @@
+{% extends 'landing.html' %}
+
+{% block title %}Settings{% endblock %}
+
+{% block feed_change %}
+
+    <div class="container" style="display: flex; justify-content: center; align-items: center;">
+        <div class="shadow">
+        <div class="card text-center" style="width: 25rem;">
+
+            <div class="card-header" style="background-color: #c0e3d7">
+                <h3>Profile Settings</h3>
+            </div>
+
+            <div class="card-body">
+
+                <form method="POST" action="{% url 'profile_app-update-profile' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                      <div class="input-group mb-3">
+                          <input type="file" class="form-control" accept="image/*" id="id_profile_photo" name="profile_photo">
+                          <label class="input-group-text" for="id_profile_photo">Profile Photo</label>
+                      </div>
+
+                      <div class="mb-3">
+                          <input class="form-control" placeholder="Tell us About Yourself" name="description" required>
+                      </div>
+
+                      <div class="mb-3">
+                          <select class="form-select form-select-sm" aria-label="Small select example" name="gender" required>
+                              <option selected value="">Select Gender</option>
+                              <option value="M">Male</option>
+                              <option value="F">Female</option>
+                              <option value="O">Others</option>
+                          </select>
+                      </div>
+
+                      <div class="mb-3">
+                          <input type="text" class="form-control" name="first_name" placeholder="{{ first_name }}" disabled>
+                      </div>
+
+                      <div class="mb-3">
+                          <input type="text" class="form-control" name="last_name" placeholder="{{ last_name }}" disabled>
+                      </div>
+
+                      <div class="mb-3">
+                          <input type="text" class="form-control" placeholder="{{ username }}" disabled>
+                      </div>
+
+                      <div class="mb-3">
+                          <input type="email" class="form-control" name="email" placeholder="{{ email }}" disabled>
+                      </div>
+
+                      <div class="mb-3">
+                          <input type="date" class="form-control" name="dob" required>
+                      </div>
+
+                      <button type="submit" class="btn btn-outline-info">Update</button>
+                </form>
+
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+{% endblock %}

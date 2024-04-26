@@ -1,0 +1,11 @@
+.env
+venv
+.idea
+certname.crt
+certname.key
+db.sqlite3
+auth_app/__pycache__
+auth_app/migrations/__pycache__
+profile_app/__pycache__
+profile_app/migrations/__pycache__
+Social_Media_Clone/__pycache__
